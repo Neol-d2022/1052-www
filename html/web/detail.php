@@ -38,13 +38,7 @@ if(isset($_SESSION['login'])) {
           <h2>帳戶資訊</h2>
           <div class="table-responsive">
             <?php
-    $conn = new mysqli("db", "pi", "pi", "pi");
-    
-    // Check connection
-    if ($conn->connect_error) {
-        die("DB Connection failed: " . $conn->connect_error);
-    }
-    mysqli_set_charset($conn, "utf8");
+    include 'db.php';
     $sql = "SELECT name, phone, id FROM clients WHERE clientID = \"" . $_SESSION['login'] . "\"";
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
@@ -73,6 +67,8 @@ if(isset($_SESSION['login'])) {
                 </tbody>
               </table>
           </div>
+          <hr />
+          <a href="detail_modify.php">修改資料</a>
           <hr />
         </main>
         <?php include 'footer.php'; ?>
