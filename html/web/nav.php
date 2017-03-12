@@ -25,6 +25,7 @@
             <a class="dropdown-item" href="logout.php">登出</a>
             <?php } else { ?>
               <a class="dropdown-item" href="#">未登入</a>
+              <a class="dropdown-item" href="register.php">註冊用戶</a>
               <?php } ?>
                 <!--<a class="dropdown-item" href="#">Action</a>
 <a class="dropdown-item" href="#">Another action</a>
