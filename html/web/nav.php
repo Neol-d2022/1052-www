@@ -20,11 +20,13 @@
               <?php echo "帳戶: " . $_SESSION['login_name']; ?>
             </a>
             <a class="dropdown-item" href="detail.php">帳戶資訊</a>
+            <a class="dropdown-item" href="activity.php">領酒資訊</a>
             <a class="dropdown-item" href="pay.php">付款</a>
             <a class="dropdown-item" href="get.php">領酒</a>
             <a class="dropdown-item" href="logout.php">登出</a>
             <?php } else { ?>
               <a class="dropdown-item" href="#">未登入</a>
+              <a class="dropdown-item" href="activity.php">領酒資訊</a>
               <a class="dropdown-item" href="register.php">註冊用戶</a>
               <?php } ?>
                 <!--<a class="dropdown-item" href="#">Action</a>
