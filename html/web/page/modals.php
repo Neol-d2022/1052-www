@@ -142,6 +142,7 @@
         </div>
       </div>
             <!-- RegModal -->
+            <?php if(isset($_GET[ 'mac']) && isset($_SESSION[ 'last_action']) && $_SESSION[ 'login'] && $_SESSION[ 'login_name']) { ?>
             <div class="modal fade" id="RegModal" tabindex="-1" role="dialog">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -180,6 +181,7 @@
                 </div>
               </div>
             </div>
+            <?php } ?>
       <!-- CheckGetModal -->
       <div id="CheckGetModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
