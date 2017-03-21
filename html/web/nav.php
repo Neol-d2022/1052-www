@@ -7,7 +7,10 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="index.php">首頁 <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="index.html">首頁 <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="index2.php">主選單 <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">帳戶</a>
@@ -17,11 +20,14 @@
               <?php echo "帳戶: " . $_SESSION['login_name']; ?>
             </a>
             <a class="dropdown-item" href="detail.php">帳戶資訊</a>
+            <a class="dropdown-item" href="activity.php">領酒資訊</a>
             <a class="dropdown-item" href="pay.php">付款</a>
             <a class="dropdown-item" href="get.php">領酒</a>
             <a class="dropdown-item" href="logout.php">登出</a>
             <?php } else { ?>
               <a class="dropdown-item" href="#">未登入</a>
+              <a class="dropdown-item" href="activity.php">領酒資訊</a>
+              <a class="dropdown-item" href="register.php">註冊用戶</a>
               <?php } ?>
                 <!--<a class="dropdown-item" href="#">Action</a>
 <a class="dropdown-item" href="#">Another action</a>

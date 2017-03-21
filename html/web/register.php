@@ -34,13 +34,7 @@
 <?php
 
 //echo "Connected successfully";
-    $conn = new mysqli("db", "pi", "pi", "pi");
-    
-    // Check connection
-    if ($conn->connect_error) {
-        die("DB Connection failed: " . $conn->connect_error);
-    }
-    mysqli_set_charset($conn, "utf8");
+    include 'db.php';
     /*
     $sql = "INSERT INTO clients (clientID, pw, name, phone, id)VALUES ('6', 'test', 'hello', '0912254358', 'E123456789')";
     if ($conn->query($sql) === TRUE) {
@@ -95,7 +89,7 @@ if (isset($_POST['signup'])) {
     */
     if (!$error) {
         if(mysqli_query($conn, "INSERT INTO clients ( pw, name, phone, id)VALUES ('" . $password . "', '" . $name . "', '" . $phone . "', '" . $id . "')")) {
-            $successmsg = "Successfully Registered! <a href='index.php'>Click here to Login</a>";
+            $successmsg = "Successfully Registered! <a href='index2.php'>Click here to Login</a>";
         } else {
             $errormsg = "Error in registering...Please try again later!";
         }
@@ -166,7 +160,7 @@ if (isset($_POST['signup'])) {
     </div>
     <div class="row">
         <div class="col-md-4 col-md-offset-4 text-center">    
-        Already Registered? <a href="index.php">Login Here</a>
+        Already Registered? <a href="index2.php">Login Here</a>
         </div>
     </div>
 
