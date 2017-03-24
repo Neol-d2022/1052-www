@@ -1,23 +1,33 @@
 <!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="./img/icon_linux.png">
+  <title>金門領酒系統</title>
+  <!-- Bootstrap core CSS -->
+  <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="./css/mainstyle.css" rel="stylesheet">
+  <link rel="import" href="./page/modals.php">
+</head>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../assets/js/vendor/jquery-3.1.1.slim.min.js"></script>
+<script>
+  window.jQuery || document.write('<script src="../assets/js/vendor/jquery.min.js"><\/script>')
+</script>
+<script src="../assets/js/vendor/tether.min.js"></script>
+<script src="../dist/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
+<!-- Custom JS for this -->
+<!--script src="XXX.js"></script-->
+</html>
 <?php session_start(); ?>
-
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!--<meta http-equiv="refresh" content="10">-->
-    <link rel="icon" href="./img/icon_linux.png">
-    <title>金門領酒系統</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="./css/mainstyle.css" rel="stylesheet">
-    <link rel="import" href="./page/modals.php">
-  </head>
-
   <body>
     <?php include 'nav.php'; ?>
       <div class="container">
@@ -60,6 +70,7 @@ function cmp($a, $b)
 usort($arr, "cmp");
 // Create connection
 include 'db.php';
+
 foreach ($arr as $i => $v) {
     $sql = "SELECT name, phone, id, clients.clientID FROM mac2client INNER JOIN clients ON clients.clientID = mac2client.clientID WHERE mac = \"" . $v[0] . "\"";
     $result = $conn->query($sql);
@@ -90,6 +101,7 @@ foreach ($arr as $i => $v) {
         } else $register[$i] = false;
     } else $register[$i] = false;
 }
+
 $conn->close();
 if(!isset($_SESSION['login'])) {?>
                   <div class="col-6 col-lg-4">
@@ -97,7 +109,6 @@ if(!isset($_SESSION['login'])) {?>
                     <p>
                       <br />
                     </p>
-
                     <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#LoginModalM">Login</button>
                   </div>
                   <?php } ?>
@@ -119,6 +130,7 @@ if(!isset($_SESSION['login'])) {?>
             </script>
             <button type="button" class="btn btn-lg btn-info" id="autorefresh" onclick="autorefresh = !autorefresh; document.getElementById('autorefresh').innerText = 'Auto Refresh: ' + autorefresh.toString();">Auto Refresh: true</button>
         </p>
+        
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
           <div class="form-group">
             <input type="text" id="SearchForIn" onkeyup="SearchClus()" placeholder="Search for ..." title="example (type,wifi)">
@@ -132,6 +144,7 @@ if(!isset($_SESSION['login'])) {?>
                   <th>MAC</th>
                   <th>RSSI</th>
                   <th>Channel</th>
+                  <th>Assignment</th>
                   <th>Receive Time</th>
                   <th>Type</th>
                 </tr>
@@ -146,6 +159,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
+                      
                       <td>
                         <?php echo $v[0]; ?>
                       </td>
@@ -154,6 +168,17 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       </td>
                       <td>
                         <?php echo $v[3]; ?>
+                      </td>
+                      <td>
+                        <?php 
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1); 
+                          $r = $res->fetch_assoc(); 
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
                       </td>
                       <td>
                         <?php echo date($dateFormat, $v[2]); ?>
@@ -177,6 +202,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>BT</td>
                       <?php } ?>
                         <?php }} ?>
+                      
               </tbody>
             </table>
           </div>
@@ -189,6 +215,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                   <th>MAC</th>
                   <th>RSSI</th>
                   <th>Channel</th>
+                  <th>Assignment</th>
                   <th>Receive Time</th>
                   <th>Type</th>
                 </tr>
@@ -211,6 +238,17 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       </td>
                       <td>
                         <?php echo $v[3]; ?>
+                      </td>
+                      <td>
+                        <?php 
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1); 
+                          $r = $res->fetch_assoc(); 
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
                       </td>
                       <td>
                         <?php echo date($dateFormat, $v[2]); ?>
@@ -242,19 +280,6 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
         <?php include 'footer.php'; ?>
       </div>
       <!--/.container-->
-      <!-- Bootstrap core JavaScript
-================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="../assets/js/vendor/jquery-3.1.1.slim.min.js"></script>
-      <script>
-        window.jQuery || document.write('<script src="../assets/js/vendor/jquery.min.js"><\/script>')
-      </script>
-      <script src="../assets/js/vendor/tether.min.js"></script>
-      <script src="../dist/js/bootstrap.min.js"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="../assets/js/ie10-viewport-bug-workaround.js"></script>
-      <!-- Custom JS for this -->
-      <!--script src="XXX.js"></script-->
       <!-- Custom Modal for this -->
       <script>
         var link = document.querySelector('link[rel="import"]');
