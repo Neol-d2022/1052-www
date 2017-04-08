@@ -132,6 +132,7 @@ if(!isset($_SESSION['login'])) {?>
                   <th>MAC</th>
                   <th>RSSI</th>
                   <th>Channel</th>
+                  <th>Assignment</th>
                   <th>Receive Time</th>
                   <th>Type</th>
                 </tr>
@@ -154,6 +155,17 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       </td>
                       <td>
                         <?php echo $v[3]; ?>
+                      </td>
+                      <td>
+                        <?php 
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1); 
+                          $r = $res->fetch_assoc(); 
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
                       </td>
                       <td>
                         <?php echo date($dateFormat, $v[2]); ?>
@@ -191,6 +203,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                   <th>MAC</th>
                   <th>RSSI</th>
                   <th>Channel</th>
+                  <th>Assignment</th>
                   <th>Receive Time</th>
                   <th>Type</th>
                 </tr>
@@ -213,6 +226,17 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       </td>
                       <td>
                         <?php echo $v[3]; ?>
+                      </td>
+                      <td>
+                        <?php 
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1); 
+                          $r = $res->fetch_assoc(); 
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
                       </td>
                       <td>
                         <?php echo date($dateFormat, $v[2]); ?>
