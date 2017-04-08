@@ -161,6 +161,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>Wi-Fi</dt>
                     </tr>
                     <?php } else if($v[4] == "b") { ?>
+                    <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
@@ -175,6 +176,7 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                         <?php echo date($dateFormat, $v[2]); ?>
                       </td>
                       <td>BT</td>
+                    </tr>
                       <?php } ?>
                         <?php }} ?>
               </tbody>
@@ -218,6 +220,7 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       <td>Wi-Fi</dt>
                     </tr>
                     <?php } else if($v[4] == "b") { ?>
+                    <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
@@ -232,6 +235,7 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                         <?php echo date($dateFormat, $v[2]); ?>
                       </td>
                       <td>BT</td>
+                    </tr>
                       <?php } ?>
                         <?php }} ?>
               </tbody>
