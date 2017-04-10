@@ -185,6 +185,17 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       </td>
                       <td>BT</td>
                       <td>
+                        <?php
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1);
+                          $r = $res->fetch_assoc();
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
+                      </td>
+                      <td>
                         <?php echo date($dateFormat, $v[2]); ?>
                       </td>
                       <td>BT</td>
@@ -255,6 +266,17 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                         <?php echo $v[1]; ?>
                       </td>
                       <td>BT</td>
+                      <td>
+                        <?php
+                          include 'db.php';
+                          $mac=substr($v[0], 0, -9);
+                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+                          $res=$conn->query($sql1);
+                          $r = $res->fetch_assoc();
+                          echo $r['org_name'];
+                          $conn->close();
+                        ?>
+                      </td>
                       <td>
                         <?php echo date($dateFormat, $v[2]); ?>
                       </td>

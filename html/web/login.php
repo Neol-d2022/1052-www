@@ -14,7 +14,9 @@
     <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="./css/mainstyle.css" rel="stylesheet">
+    <link rel="import" href="./page/modals.php">
   </head>
+  <div class="modals"></div>
   <!-- Bootstrap core JavaScript
 ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->

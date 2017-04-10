@@ -1,5 +1,5 @@
 /*
- * Style tweaks
+ *tyle tweaks
  * --------------------------------------------------
  */
 html,
@@ -78,25 +78,5 @@ footer {
   padding: 12px 20px 12px 40px;
   border: 1px solid #ddd;
   margin-bottom: 12px;
-}
-
-#regTable {
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #ddd;
-  font-size: 18px;
-}
-
-#regTable th, #regTable td {
-  text-align: left;
-  padding: 12px;
-}
-
-#regTable tr {
-  border-bottom: 1px solid #ddd;
-}
-
-#regTable tr.header, #regTable tr:hover {
-  background-color: #f1f1f1;
 }
 /*search css end*/
