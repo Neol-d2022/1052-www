@@ -34,7 +34,7 @@
             var str = document.getElementById("Name").value
             if(!str){document.getElementById("name_error").innerHTML = "不可輸入為空!"}
             else if(!nameRule.test(str)){
-                document.getElementById("name_error").innerHTML = "你的姓名格式輸入錯誤！"
+                document.getElementById("name_error").innerHTML = "姓名不能包含特殊字元！"
             }else{
                 document.getElementById("name_error").innerHTML = ""
                 return true
@@ -65,7 +65,7 @@
             var str2= document.getElementById("PasswdAgain").value
             if(!str1){document.getElementById("pw_error").innerHTML = "不可輸入為空!"}
             else if(!passwdRule.test(str1)){
-                document.getElementById("pw_error").innerHTML = "你的密碼至少6到30位以上一大寫英文一小寫英文！"
+                document.getElementById("pw_error").innerHTML = "你的密碼至少6到30字元以上，並包含一大寫英文一小寫英文！"
             }else{
                 document.getElementById("pw_error").innerHTML = ""
             }
@@ -78,11 +78,6 @@
             }
         }
         function checkform(){
-            idTest()
-            nameTest()
-            emailTest()
-            phoneTest()
-            pwTest()
             if(idTest()&&nameTest()&&emailTest()&&phoneTest()&&pwTest()){
                 document.getElementById("signupform").submit()
             }
@@ -102,7 +97,6 @@
         $email = mysqli_real_escape_string($conn, $_POST['EmailAddress']);
         $phone = mysqli_real_escape_string($conn, $_POST['PhoneNumber']);
         $password = mysqli_real_escape_string($conn, $_POST['Passwd']);
-        $cpassword = mysqli_real_escape_string($conn, $_POST['PasswdAgain']);
         $id = mysqli_real_escape_string($conn, $_POST['ID']);
         //因為多了EMAIL請於資料庫clients新增信箱欄位
         $sql1 = "SELECT COUNT(*) AS num FROM clients WHERE id = \"" . $id . "\"";
@@ -156,7 +150,7 @@
 
                     <div class="form-group">
                         <label for="PasswdAgain"></label>
-                        <input type="password" name="PasswdAgain" id="PasswdAgain" placeholder="重複輸入密碼" onchange="pwTest()" required class="form-control form-control-lg" />
+                        <input type="password" id="PasswdAgain" placeholder="重複輸入密碼" onchange="pwTest()" required class="form-control form-control-lg" />
                         <span class="text-danger" id="pwAgain_error"></span>
                     </div>
 
