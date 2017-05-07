@@ -60,9 +60,22 @@ function cmp($a, $b)
 usort($arr, "cmp");
 // Create connection
 include 'db.php';
+
 foreach ($arr as $i => $v) {
     $sql = "SELECT name, phone, id, clients.clientID FROM mac2client INNER JOIN clients ON clients.clientID = mac2client.clientID WHERE mac = \"" . $v[0] . "\"";
     $result = $conn->query($sql);
+    // 改良MAC製造商的查詢方法(index2.php) ver2.0
+    $mac=substr($v[0], 0, -9);
+    $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
+    $res=$conn->query($sql1);
+    if ($res !== false) {
+      if ($res->num_rows > 0) {
+        while($r = $res->fetch_assoc()) {
+          $arr1[$r['asgmt']]=$r['org_name'];
+        }
+      }
+    }
+    //
     if ($result !== false) {
         if ($result->num_rows > 0) {
             // output data of each row
@@ -91,6 +104,10 @@ foreach ($arr as $i => $v) {
     } else $register[$i] = false;
 }
 $conn->close();
+
+
+
+
 if(!isset($_SESSION['login'])) {?>
                   <div class="col-6 col-lg-4">
                     <h2>手動登入</h2>
@@ -104,7 +121,7 @@ if(!isset($_SESSION['login'])) {?>
             </div>
             <!--/row-->
           </div>
-          <!--/span-->
+          <!--/span--> 
         </div>
         <!--/row-->
 
@@ -158,13 +175,8 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       </td>
                       <td>
                         <?php 
-                          include 'db.php';
-                          $mac=substr($v[0], 0, -9);
-                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
-                          $res=$conn->query($sql1); 
-                          $r = $res->fetch_assoc(); 
-                          echo $r['org_name'];
-                          $conn->close();
+                          $mac=strtoupper(substr($v[0], 0, -9));
+                          echo $arr1[strtoupper($mac)];
                         ?>
                       </td>
                       <td>
@@ -186,13 +198,8 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>BT</td>
                       <td>
                         <?php
-                          include 'db.php';
-                          $mac=substr($v[0], 0, -9);
-                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
-                          $res=$conn->query($sql1);
-                          $r = $res->fetch_assoc();
-                          echo $r['org_name'];
-                          $conn->close();
+                          $mac=strtoupper(substr($v[0], 0, -9));
+                          echo $arr1[strtoupper($mac)];
                         ?>
                       </td>
                       <td>
@@ -240,13 +247,8 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       </td>
                       <td>
                         <?php 
-                          include 'db.php';
-                          $mac=substr($v[0], 0, -9);
-                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
-                          $res=$conn->query($sql1); 
-                          $r = $res->fetch_assoc(); 
-                          echo $r['org_name'];
-                          $conn->close();
+                          $mac=strtoupper(substr($v[0], 0, -9));
+                          echo $arr1[strtoupper($mac)];
                         ?>
                       </td>
                       <td>
@@ -268,13 +270,8 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       <td>BT</td>
                       <td>
                         <?php
-                          include 'db.php';
-                          $mac=substr($v[0], 0, -9);
-                          $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
-                          $res=$conn->query($sql1);
-                          $r = $res->fetch_assoc();
-                          echo $r['org_name'];
-                          $conn->close();
+                          $mac=strtoupper(substr($v[0], 0, -9));
+                          echo $arr1[strtoupper($mac)];
                         ?>
                       </td>
                       <td>
