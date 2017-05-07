@@ -52,61 +52,57 @@ while (($buffer = fgets($myfile)) !== false) {
     }
 }
 fclose($myfile);
-function cmp($a, $b)
-{
-    $ts = time();
-    return ($b[1] - $ts + $b[2]) - ($a[1] - $ts + $a[2]);
-}
-usort($arr, "cmp");
+
 // Create connection
 include 'db.php';
+$sql = "CREATE TEMPORARY TABLE `current_user` (
+  `mac_addr` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL, 
+  `rssi` INT(10) NOT NULL DEFAULT '-100', 
+  `timestamp` INT(10) UNSIGNED NOT NULL DEFAULT '0', 
+  `channel` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `type` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`mac_addr`)
+) ENGINE = InnoDB;";
+$result = $conn->query($sql);
 
 foreach ($arr as $i => $v) {
-    $sql = "SELECT name, phone, id, clients.clientID FROM mac2client INNER JOIN clients ON clients.clientID = mac2client.clientID WHERE mac = \"" . $v[0] . "\"";
+    $sql = "INSERT INTO `current_user` (`mac_addr`, `rssi`, `timestamp`, `channel`, `type`) VALUE ('$v[0]', '$v[1]', '$v[2]', '$v[3]', '$v[4]');";
     $result = $conn->query($sql);
-    // 改良MAC製造商的查詢方法(index2.php) ver2.0
-    $mac=substr($v[0], 0, -9);
-    $sql1="SELECT * FROM `oui` WHERE asgmt LIKE '%$mac%'";
-    $res=$conn->query($sql1);
-    if ($res !== false) {
-      if ($res->num_rows > 0) {
-        while($r = $res->fetch_assoc()) {
-          $arr1[$r['asgmt']]=$r['org_name'];
-        }
-      }
-    }
-    //
-    if ($result !== false) {
-        if ($result->num_rows > 0) {
-            // output data of each row
-            $register[$i] = true;
-            while($row = $result->fetch_assoc()) {
-                ?>
-                <div class="col-6 col-lg-4">
-                  <h2><?php echo $row["name"]; ?></h2>
-                  <p>
-                    <?php echo $v[0]; ?>
-                      <br />
-                      <?php echo $row["id"]; ?>
-                  </p>
-
-                  <?php if(!isset($_SESSION['login'])) { ?>
-                    <!-- Trigger the modal with a button -->
-                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#LoginModal" data-userid="<?php echo $row["clientID"]; ?>" data-username="<?php echo $row["name"]; ?>">Login</button>
-                    <?php } else { ?>
-                      <button type="button" class="btn btn-info btn-lg">Logged In</button>
-                      <?php } ?>
-                </div>
-                <!--/span-->
-                <?php
-            }
-        } else $register[$i] = false;
-    } else $register[$i] = false;
 }
+
+$sql = "SELECT DISTINCT `name`, `phone`, `id`, `clients`.`clientID` AS `cid` FROM  (`current_user` INNER JOIN `mac2client` ON `mac_addr` = `mac`) INNER JOIN `clients` ON `mac2client`.`clientID` = `clients`.`clientID` ORDER BY `timestamp` - `rssi`;";
+$result = $conn->query($sql);
+$all_clients_here = $result;
+
+while($row = $all_clients_here->fetch_assoc()) {
+  ?>
+  <div class="col-6 col-lg-4">
+    <h2><?php echo $row["name"]; ?></h2>
+    <p>
+      <?php echo $v[0]; ?>
+      <br />
+      <?php echo $row["id"]; ?>
+    </p>
+    <?php if(!isset($_SESSION['login'])) { ?>
+    <!-- Trigger the modal with a button -->
+      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#LoginModal" data-userid="<?php echo $row["cid"]; ?>" data-username="<?php echo $row["name"]; ?>">Login</button>
+    <?php } else { ?>
+      <button type="button" class="btn btn-info btn-lg">Logged In</button>
+    <?php } ?>
+  </div>
+  <!--/span-->
+  <?php
+}
+
+$sql = "SELECT `mac_addr`, `rssi`, `channel`, `org_name`, `timestamp`, `type` FROM (`current_user` INNER JOIN `mac2client` ON `mac_addr` = `mac`) LEFT OUTER JOIN `oui` ON UPPER(SUBSTRING(`mac_addr`, 1, 8)) = UPPER(`asgmt`) ORDER BY `timestamp` - `rssi`;";
+$result = $conn->query($sql);
+$reg_devices_here = $result;
+
+$sql = "SELECT `mac_addr`, `rssi`, `channel`, `org_name`, `timestamp`, `type` FROM (`current_user` LEFT OUTER JOIN `mac2client` ON `mac_addr` = `mac`) LEFT OUTER JOIN `oui` ON UPPER(SUBSTRING(`mac_addr`, 1, 8)) = UPPER(`asgmt`) WHERE `clientID` IS NULL ORDER BY `timestamp` - `rssi`;";
+$result = $conn->query($sql);
+$unknown_devices_here = $result;
+
 $conn->close();
-
-
-
 
 if(!isset($_SESSION['login'])) {?>
                   <div class="col-6 col-lg-4">
@@ -157,58 +153,52 @@ if(!isset($_SESSION['login'])) {?>
               <tbody>
                 <?php
 $no = 0;
-foreach ($arr as $i => $v) { if($register[$i]) {
+while($row = $reg_devices_here->fetch_assoc()) {
     ?>
-                  <?php if($v[4] == "w") { ?>
+                  <?php if($row['type'] == "w") { ?>
                     <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
                       <td>
-                        <?php echo $v[0]; ?>
+                        <?php echo $row['mac_addr']; ?>
                       </td>
                       <td>
-                        <?php echo $v[1]; ?>
+                        <?php echo $row['rssi']; ?>
                       </td>
                       <td>
-                        <?php echo $v[3]; ?>
+                        <?php echo $row['channel']; ?>
                       </td>
                       <td>
-                        <?php 
-                          $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
-                        ?>
+                        <?php if(isset($row['org_name'])) echo $row['org_name']; else echo '未知的'; ?>
                       </td>
                       <td>
-                        <?php echo date($dateFormat, $v[2]); ?>
+                        <?php echo date($dateFormat, $row['timestamp']); ?>
                       </td>
                       <td>Wi-Fi</dt>
                     </tr>
-                    <?php } else if($v[4] == "b") { ?>
+                    <?php } else if($row['type'] == "b") { ?>
                     <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
                       <td>
-                        <?php echo $v[0]; ?>
+                        <?php echo $row['mac_addr']; ?>
                       </td>
                       <td>
-                        <?php echo $v[1]; ?>
+                        <?php echo $row['rssi']; ?>
                       </td>
                       <td>BT</td>
                       <td>
-                        <?php
-                          $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
-                        ?>
+                        <?php if(isset($row['org_name'])) echo $row['org_name']; else echo '未知的'; ?>
                       </td>
                       <td>
-                        <?php echo date($dateFormat, $v[2]); ?>
+                        <?php echo date($dateFormat, $row['timestamp']); ?>
                       </td>
                       <td>BT</td>
                     </tr>
                       <?php } ?>
-                        <?php }} ?>
+                        <?php } ?>
               </tbody>
             </table>
           </div>
@@ -229,58 +219,52 @@ foreach ($arr as $i => $v) { if($register[$i]) {
               <tbody>
                 <?php
 $no = 0;
-foreach ($arr as $i => $v) { if(!$register[$i]) {
+while($row = $reg_devices_here->fetch_assoc()) {
     ?>
-                  <?php if($v[4] == "w") { ?>
+                  <?php if($row['type'] == "w") { ?>
                     <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
                       <td>
-                        <?php echo '<a href="reg.php?mac=' . urlencode($v[0]) . '">' . $v[0] . '</a>'; ?>
+                        <?php echo $row['mac_addr']; ?>
                       </td>
                       <td>
-                        <?php echo $v[1]; ?>
+                        <?php echo $row['rssi']; ?>
                       </td>
                       <td>
-                        <?php echo $v[3]; ?>
+                        <?php echo $row['channel']; ?>
                       </td>
                       <td>
-                        <?php 
-                          $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
-                        ?>
+                        <?php if(isset($row['org_name'])) echo $row['org_name']; else echo '未知的'; ?>
                       </td>
                       <td>
-                        <?php echo date($dateFormat, $v[2]); ?>
+                        <?php echo date($dateFormat, $row['timestamp']); ?>
                       </td>
                       <td>Wi-Fi</dt>
                     </tr>
-                    <?php } else if($v[4] == "b") { ?>
+                    <?php } else if($row['type'] == "b") { ?>
                     <tr>
                       <td>
                         <?php echo $no + 1; $no += 1; ?>
                       </td>
                       <td>
-                        <?php echo '<a href="reg.php?mac=' . urlencode($v[0]) . '">' . $v[0] . '</a>'; ?>
+                        <?php echo $row['mac_addr']; ?>
                       </td>
                       <td>
-                        <?php echo $v[1]; ?>
+                        <?php echo $row['rssi']; ?>
                       </td>
                       <td>BT</td>
                       <td>
-                        <?php
-                          $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
-                        ?>
+                        <?php if(isset($row['org_name'])) echo $row['org_name']; else echo '未知的'; ?>
                       </td>
                       <td>
-                        <?php echo date($dateFormat, $v[2]); ?>
+                        <?php echo date($dateFormat, $row['timestamp']); ?>
                       </td>
                       <td>BT</td>
                     </tr>
                       <?php } ?>
-                        <?php }} ?>
+                        <?php } ?>
               </tbody>
             </table>
           </div>
