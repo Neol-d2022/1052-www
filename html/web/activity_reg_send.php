@@ -37,6 +37,7 @@ if($_GET['id'] !== hash( 'sha512', $_SESSION[ 'last_action'] . 'activity_reg_sen
 }
 include 'db.php';
 $sql = "INSERT INTO `activity` (`title`, `durationStart`, `durationEnd`, `cost`) VALUES ('" . $_POST['title'] . "', '" . $_POST['durationStart'] . "', '" . $_POST['durationEnd'] . "', ". $_POST['cost'] .")";
+file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
 $result = $conn->query($sql);
 if($result === false) {
     ?>
@@ -54,6 +55,7 @@ if($result === false) {
       <?php
 }
 $sql = "UPDATE `activity` SET `tableName` = CONCAT('', 'adetails', LAST_INSERT_ID()) WHERE `id` = LAST_INSERT_ID(); SELECT CONCAT('', 'adetails', LAST_INSERT_ID()) AS `tableName`;";
+file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
 $result = $conn->multi_query($sql);
 if($result === false) {
     ?>

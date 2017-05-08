@@ -39,6 +39,7 @@ if(isset($_SESSION['login'])) {
     $result = $conn->query($sql);
     if($result->num_rows > 0) {
         $sql = "UPDATE " . $row["tableName"] . " SET got = 1 WHERE clientID = " . $_SESSION['login'];
+        file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
         $result = $conn->query($sql);
     }
     else $result = false;

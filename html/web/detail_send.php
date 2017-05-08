@@ -41,6 +41,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     // OK
     $sql = 'UPDATE `clients` SET `name`="' .  $_POST['newname'] . '", `phone`="' .  $_POST['newphone'] .'" WHERE `id`="' . $_POST['id'] . '";';
+    file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
     $result = $conn->query($sql);
     if ($result) {
         //Update success
