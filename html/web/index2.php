@@ -61,16 +61,24 @@ $sql = "CREATE TEMPORARY TABLE `current_user` (
   `timestamp` INT(10) UNSIGNED NOT NULL DEFAULT '0', 
   `channel` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `type` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`mac_addr`)
+  `macO` VARCHAR(16) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `rank` INT(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`mac_addr`), INDEX (`macO`), INDEX (`rank`)
 ) ENGINE = InnoDB;";
 $result = $conn->query($sql);
 
 foreach ($arr as $i => $v) {
-    $sql = "INSERT INTO `current_user` (`mac_addr`, `rssi`, `timestamp`, `channel`, `type`) VALUE ('$v[0]', '$v[1]', '$v[2]', '$v[3]', '$v[4]');";
+    $sql = "INSERT INTO `current_user` (`mac_addr`, `rssi`, `timestamp`, `channel`, `type`, `macO`, `rank`) VALUE ('$v[0]', '$v[1]', '$v[2]', '$v[3]', '$v[4]', UPPER(SUBSTRING('$v[0]', 1, 8)), $v[2] - $v[1]);";
     $result = $conn->query($sql);
 }
 
-$sql = "SELECT DISTINCT `name`, `phone`, `id`, `clients`.`clientID` AS `cid` FROM  (`current_user` INNER JOIN `mac2client` ON `mac_addr` = `mac`) INNER JOIN `clients` ON `mac2client`.`clientID` = `clients`.`clientID` ORDER BY `timestamp` - `rssi`;";
+/*$sql = "UPDATE `current_user` SET `macO` = UPPER(SUBSTRING(`mac_addr`, 1, 8));";
+$result = $conn->query($sql);
+
+$sql = "UPDATE `current_user` SET `rank` = `timestamp` - `rssi`;";
+$result = $conn->query($sql);*/
+
+$sql = "SELECT `name`, `phone`, `id`, `clients`.`clientID` AS `cid`, GROUP_CONCAT(`mac_addr` SEPARATOR ', ') AS `macs` FROM  (`current_user` INNER JOIN `mac2client` ON `mac_addr` = `mac`) INNER JOIN `clients` ON `mac2client`.`clientID` = `clients`.`clientID` GROUP BY `name`, `phone`, `id`, `clients`.`clientID` ORDER BY `rank`;";
 $result = $conn->query($sql);
 $all_clients_here = $result;
 
@@ -79,7 +87,7 @@ while($row = $all_clients_here->fetch_assoc()) {
   <div class="col-6 col-lg-4">
     <h2><?php echo $row["name"]; ?></h2>
     <p>
-      <?php echo $v[0]; ?>
+      <?php echo $row["macs"]; ?>
       <br />
       <?php echo $row["id"]; ?>
     </p>
@@ -94,13 +102,25 @@ while($row = $all_clients_here->fetch_assoc()) {
   <?php
 }
 
-$sql = "SELECT `mac_addr`, `rssi`, `channel`, `org_name`, `timestamp`, `type` FROM (`current_user` INNER JOIN `mac2client` ON `mac_addr` = `mac`) LEFT OUTER JOIN `oui` ON UPPER(SUBSTRING(`mac_addr`, 1, 8)) = UPPER(`asgmt`) ORDER BY `timestamp` - `rssi`;";
+$sql = "SELECT `mac_addr`, `rssi`, `channel`, 'Not Support' AS `org_name`, `timestamp`, `type`, `mac2client`.`clientID` AS `cid` FROM (`current_user` LEFT OUTER JOIN `mac2client` ON `mac_addr` = `mac`) ORDER BY `rank`;";
 $result = $conn->query($sql);
-$reg_devices_here = $result;
+$devices_here = $result;
 
-$sql = "SELECT `mac_addr`, `rssi`, `channel`, `org_name`, `timestamp`, `type` FROM (`current_user` LEFT OUTER JOIN `mac2client` ON `mac_addr` = `mac`) LEFT OUTER JOIN `oui` ON UPPER(SUBSTRING(`mac_addr`, 1, 8)) = UPPER(`asgmt`) WHERE `clientID` IS NULL ORDER BY `timestamp` - `rssi`;";
-$result = $conn->query($sql);
-$unknown_devices_here = $result;
+$reg_dev = array();
+$unknown_dev = array();
+$i1 = 0;
+$i2 = 0;
+
+while($row = $devices_here->fetch_assoc()) {
+  if(isset($row['cid'])) {
+    $reg_dev[$i1] = $row;
+    $i1 = $i1 + 1;
+  }
+  else {
+    $unknown_dev[$i2] = $row;
+    $i2 = $i2 + 1;
+  }
+}
 
 $conn->close();
 
@@ -153,7 +173,7 @@ if(!isset($_SESSION['login'])) {?>
               <tbody>
                 <?php
 $no = 0;
-while($row = $reg_devices_here->fetch_assoc()) {
+foreach($reg_dev as $i => $row) {
     ?>
                   <?php if($row['type'] == "w") { ?>
                     <tr>
@@ -219,7 +239,7 @@ while($row = $reg_devices_here->fetch_assoc()) {
               <tbody>
                 <?php
 $no = 0;
-while($row = $reg_devices_here->fetch_assoc()) {
+foreach($unknown_dev as $i => $row) {
     ?>
                   <?php if($row['type'] == "w") { ?>
                     <tr>
@@ -297,7 +317,7 @@ while($row = $reg_devices_here->fetch_assoc()) {
       <!-- Custom JS for this -->
       <script>
         logining = false;
-        setInterval(reload, 10000);
+        setInterval(reload, 20000);
 
         function reload() {
           if (logining || !autorefresh) {} else {
