@@ -176,7 +176,10 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>
                         <?php 
                           $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
+                          if(isset($arr1[strtoupper($mac)]))
+                            echo $arr1[strtoupper($mac)];
+                          else
+                            echo 'UNKNOWN MANUFACTURER';
                         ?>
                       </td>
                       <td>
@@ -199,7 +202,10 @@ foreach ($arr as $i => $v) { if($register[$i]) {
                       <td>
                         <?php
                           $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
+                          if(isset($arr1[strtoupper($mac)]))
+                            echo $arr1[strtoupper($mac)];
+                          else
+                            echo 'UNKNOWN MANUFACTURER';
                         ?>
                       </td>
                       <td>
@@ -248,7 +254,10 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       <td>
                         <?php 
                           $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
+                          if(isset($arr1[strtoupper($mac)]))
+                            echo $arr1[strtoupper($mac)];
+                          else
+                            echo 'UNKNOWN MANUFACTURER';
                         ?>
                       </td>
                       <td>
@@ -271,7 +280,10 @@ foreach ($arr as $i => $v) { if(!$register[$i]) {
                       <td>
                         <?php
                           $mac=strtoupper(substr($v[0], 0, -9));
-                          echo $arr1[strtoupper($mac)];
+                          if(isset($arr1[strtoupper($mac)]))
+                            echo $arr1[strtoupper($mac)];
+                          else
+                            echo 'UNKNOWN MANUFACTURER';
                         ?>
                       </td>
                       <td>
