@@ -36,7 +36,7 @@ if($_GET['id'] !== hash( 'sha512', $_SESSION[ 'last_action'] . 'activity_reg_sen
     <?php
 }
 include 'db.php';
-$sql = "INSERT INTO `activity` (`title`, `durationStart`, `durationEnd`, `cost`) VALUES ('" . $_POST['title'] . "', '" . $_POST['durationStart'] . "', '" . $_POST['durationEnd'] . "', ". $_POST['cost'] .")";
+$sql = "INSERT INTO `activity` (`title`, `durationStart`, `durationEnd`, `cost`) VALUES ('" . $_POST['title'] . "', '" . $_POST['durationStart'] . "', '" . $_POST['durationEnd'] . "', ". $_POST['cost'] .");";
 file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
 $result = $conn->query($sql);
 if($result === false) {
