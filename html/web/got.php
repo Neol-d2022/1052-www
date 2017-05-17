@@ -35,7 +35,7 @@ if(isset($_SESSION['login'])) {
     $sql = "SELECT tableName FROM activity WHERE id = " . $_GET["aid"];
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
-    $sql = "SELECT clientID, paid, got FROM " . $row["tableName"] . " WHERE clientID = " . $_SESSION['login'] . ";";
+    $sql = "SELECT clients.clientID, paid, got FROM " . $row["tableName"] . " INNER JOIN clients ON " . $row["tableName"] . ".clientID = clients.clientID INNER JOIN devices ON owner = devices.id WHERE clients.clientID = " . $_SESSION['login'] . " AND uuid = \"" . $uuid . "\";";
     $result = $conn->query($sql);
     if($result->num_rows > 0) {
         $sql = "UPDATE " . $row["tableName"] . " SET got = 1 WHERE clientID = " . $_SESSION['login'] . ";";
