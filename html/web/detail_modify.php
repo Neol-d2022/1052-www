@@ -24,7 +24,7 @@ if(isset($_SESSION['login'])) {
           <div class="table-responsive">
             <?php
     include 'db.php';
-    $sql = "SELECT clientID, name, phone, id FROM clients WHERE clientID = \"" . $_SESSION['login'] . "\"";
+    $sql = "SELECT clientID, name, phone, clients.id AS cid, uuid FROM clients INNER JOIN devices ON clients.id = devices.id WHERE clientID = \"" . $_SESSION['login'] . "\";";
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
     $conn->close();
@@ -32,7 +32,7 @@ if(isset($_SESSION['login'])) {
     ?>
               <form method="POST" action="detail_send.php?id=<?php echo hash( 'sha512', $_SESSION[ 'last_action'] . 'detail_send.php?clientID=' . $row[ 'clientID'] . '&id=' . $row[ 'id']); ?>">
                 <input type="hidden" name="clientID" value=<?php echo '"' . $row[ "clientID"] . '"' ; ?> />
-                <input type="hidden" name="id" value=<?php echo '"' . $row[ "id"] . '"' ; ?> />
+                <input type="hidden" name="id" value=<?php echo '"' . $row[ "cid"] . '"' ; ?> />
                 <table class="table table-striped">
                   <tbody>
                     <tr>
@@ -51,6 +51,12 @@ if(isset($_SESSION['login'])) {
                       <td><b>身分證字號</b></td>
                       <td>
                         <?php echo $row["id"] ; ?>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>可離線修改</b></td>
+                      <td>
+                        <?php if ($row["uuid"] == $uuid) echo '是'; else echo '否'; ?>
                       </td>
                     </tr>
                   </tbody>
