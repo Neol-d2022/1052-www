@@ -30,7 +30,7 @@ if(isset($_SESSION['login'])) {
     $conn->close();
     $_SESSION['last_action'] = bin2hex(openssl_random_pseudo_bytes(128));
     ?>
-              <form method="POST" action="detail_send.php?id=<?php echo hash( 'sha512', $_SESSION[ 'last_action'] . 'detail_send.php?clientID=' . $row[ 'clientID'] . '&id=' . $row[ 'id']); ?>">
+              <form method="POST" action="detail_send.php?id=<?php echo hash( 'sha512', $_SESSION[ 'last_action'] . 'detail_send.php?clientID=' . $row[ 'clientID'] . '&id=' . $row[ 'cid']); ?>">
                 <input type="hidden" name="clientID" value=<?php echo '"' . $row[ "clientID"] . '"' ; ?> />
                 <input type="hidden" name="id" value=<?php echo '"' . $row[ "cid"] . '"' ; ?> />
                 <table class="table table-striped">
