@@ -50,7 +50,7 @@ if(isset($_SESSION['login'])) {
                     <tr>
                       <td><b>身分證字號</b></td>
                       <td>
-                        <?php echo $row["id"] ; ?>
+                        <?php echo $row["cid"] ; ?>
                       </td>
                     </tr>
                     <tr>
