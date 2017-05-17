@@ -36,7 +36,7 @@ if($_GET['id'] !== hash( 'sha512', $_SESSION['last_action'] . 'detail_send.php?c
     <?php
 }
 include 'db.php';
-$sql = "SELECT * FROM clients INNER JOIN devices ON clients.id = devices.id WHERE clientID = " . $_POST['clientID'] . " AND id = \"" . $_POST['id'] . "\" AND uuid=\"" . $uuid . "\";";
+$sql = "SELECT * FROM clients INNER JOIN devices ON owner = devices.id WHERE clientID = " . $_POST['clientID'] . " AND id = \"" . $_POST['id'] . "\" AND uuid=\"" . $uuid . "\";";
 $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     // OK

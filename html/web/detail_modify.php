@@ -24,7 +24,7 @@ if(isset($_SESSION['login'])) {
           <div class="table-responsive">
             <?php
     include 'db.php';
-    $sql = "SELECT clientID, name, phone, clients.id AS cid, uuid FROM clients INNER JOIN devices ON clients.id = devices.id WHERE clientID = \"" . $_SESSION['login'] . "\";";
+    $sql = "SELECT clientID, name, phone, clients.id AS cid, uuid FROM clients INNER JOIN devices ON owner = devices.id WHERE clientID = \"" . $_SESSION['login'] . "\";";
     $result = $conn->query($sql);
     $row = $result->fetch_assoc();
     $conn->close();
