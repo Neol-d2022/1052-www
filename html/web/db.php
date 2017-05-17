@@ -4,7 +4,6 @@ if(($uuid = fgets($uuidFile)) === false) {
     die("Cannot read uuid");
 }
 $uuid = str_replace(PHP_EOL, '', $uuid);
-var_dump($uuid);
 
 $conn = new mysqli("db", "pi", "pi", "pi");
 mysqli_set_charset($conn, "utf8");
