@@ -38,7 +38,7 @@ if(isset($_SESSION['login'])) {
     $sql = "SELECT clientID, paid, got FROM " . $row["tableName"] . " WHERE clientID = " . $_SESSION['login'] . ";";
     $result = $conn->query($sql);
     if($result->num_rows > 0) {
-        $sql = "UPDATE " . $row["tableName"] . " SET got = 1 WHERE clientID = " . $_SESSION['login'];
+        $sql = "UPDATE " . $row["tableName"] . " SET got = 1 WHERE clientID = " . $_SESSION['login'] . ";";
         file_put_contents("/var/www/diff.sql", $sql, FILE_APPEND);
         $result = $conn->query($sql);
     }
