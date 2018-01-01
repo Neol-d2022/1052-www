@@ -57,10 +57,10 @@ if(isset($_SESSION['login'])) {
       </script>
       <script>
         //alert("您已經登入");
-        //window.location.replace("index.php");
+        //window.location.replace("index2.php");
         $("#AlreadyLoggedinModal").modal('show');
         setTimeout(function() {
-          window.location.href = './index.php';
+          window.location.href = './index2.php';
         }, 3000);
       </script>
     </body>
@@ -93,7 +93,7 @@ else {
       </script>
         <script>
           //alert("登入成功");
-          //window.location.replace("index.php");
+          //window.location.replace("index2.php");
           $("#LoginSuccessModal").modal('show');
           setTimeout(function() {
             window.location.href = './pay.php';
@@ -122,10 +122,10 @@ else {
         </script>
           <script>
             //alert("帳號密碼錯誤");
-            //window.location.replace("index.php");
+            //window.location.replace("index2.php");
             $("#LoginPasswordIncorrectModal").modal('show');
             setTimeout(function() {
-              window.location.href = './index.php';
+              window.location.href = './index2.php';
             }, 3000);
           </script>
         </body>

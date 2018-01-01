@@ -5,7 +5,7 @@ if(isset($_SESSION['login'])) {
     unset($_SESSION['login_name']);
     unset($_SESSION['last_action']);
     //echo "已登出<br />";
-    //header("location: index.php");
+    //header("location: index2.php");
     ?>
   <!DOCTYPE html>
   <html>
@@ -13,7 +13,7 @@ if(isset($_SESSION['login'])) {
   <body>
     <script>
       alert("您已登出");
-      window.location.replace("index.php");
+      window.location.replace("index2.php");
     </script>
   </body>
 
@@ -29,7 +29,7 @@ else {
     <body>
       <script>
         alert("未登入");
-        window.location.replace("index.php");
+        window.location.replace("index2.php");
       </script>
     </body>
 
